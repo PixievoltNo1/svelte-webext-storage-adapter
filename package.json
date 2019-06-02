@@ -1,10 +1,16 @@
 {
 	"name": "svelte-webext-storage-adapter",
+	"version": "1.0.0",
+	"description": "Svelte stores, backed up by chrome.storage",
+	"keywords": ["svelte", "svelte3", "webextension", "webext", "firefox", "chrome", "persist"],
 	"author": {
 		"name": "Pikadude No. 1",
 		"url": "https://pikadudeno1.com"
 	},
+	"homepage": "https://github.com/PikadudeNo1/svelte-webext-storage-adapter",
+	"bugs": "https://github.com/PikadudeNo1/svelte-webext-storage-adapter/issues",
 	"module": "index.mjs",
+	"files": ["index.mjs", "nullKeysStores.mjs"],
 	"scripts": {
 		"test": "mocha"
 	},
