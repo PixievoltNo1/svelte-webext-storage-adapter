@@ -1,4 +1,5 @@
 # `svelte-webext-storage-adapter`
+[![npm](https://img.shields.io/npm/v/svelte-webext-storage-adapter.svg)](https://www.npmjs.com/package/svelte-webext-storage-adapter) [![Bundle size](https://img.shields.io/bundlephobia/minzip/svelte-webext-storage-adapter.svg)](https://bundlephobia.com/result?p=svelte-webext-storage-adapter) [![License](https://img.shields.io/github/license/PikadudeNo1/svelte-webext-storage-adapter.svg)](https://github.com/PikadudeNo1/svelte-webext-storage-adapter/blob/master/LICENSE.txt)
 
 If you're using [Svelte](https://svelte.dev/) v3 to make a [WebExtension](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions) for Firefox or Chrome, you can use this to create [writable stores](https://svelte.dev/tutorial/writable-stores) that are backed by your extension's storage. Handy features are provided to you right out of the box:
 
@@ -20,7 +21,7 @@ This project has a [Code of Conduct](CODE_OF_CONDUCT.md). By participating in th
       - [`onSetError()`](#onseterror)
     + [Returned value: Store group](#returned-value-store-group)
       - [Property: `stores`](#property-stores)
-        * [⚠️ Caution: When `keys == null`, unused stores may be invalidated](#-caution-when-keys--null-unused-stores-may-be-invalidated)
+        * [⚠️ Caution: When `keys == null`, unused stores may be invalidated](#%EF%B8%8F-caution-when-keys--null-unused-stores-may-be-invalidated)
       - [Property: `ready`](#property-ready)
       - [Property: `unLive()`](#property-unlive)
   * [Suggested usage: Dedicated module](#suggested-usage-dedicated-module)
