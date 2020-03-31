@@ -257,7 +257,7 @@ exportedStores = Object.assign({}, stores, {
 	"key": writableDerived(
 		stores.key,
 		(json) => JSON.parse(json),
-		({reflecting}) => JSON.stringify(reflecting)
+		(data) => JSON.stringify(data)
 	),
 });
 export { exportedStores as stores, ready, exportedStores as default };
