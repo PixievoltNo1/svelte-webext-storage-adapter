@@ -1,5 +1,5 @@
 # `svelte-webext-storage-adapter`
-[![npm](https://img.shields.io/npm/v/svelte-webext-storage-adapter.svg)](https://www.npmjs.com/package/svelte-webext-storage-adapter) [![Bundle size](https://img.shields.io/bundlephobia/minzip/svelte-webext-storage-adapter.svg)](https://bundlephobia.com/result?p=svelte-webext-storage-adapter) [![License](https://img.shields.io/github/license/PikadudeNo1/svelte-webext-storage-adapter.svg)](https://github.com/PikadudeNo1/svelte-webext-storage-adapter/blob/master/LICENSE.txt)
+[![npm](https://img.shields.io/npm/v/svelte-webext-storage-adapter.svg)](https://www.npmjs.com/package/svelte-webext-storage-adapter) [![Bundle size](https://img.shields.io/bundlephobia/minzip/svelte-webext-storage-adapter.svg)](https://bundlephobia.com/result?p=svelte-webext-storage-adapter) [![License](https://img.shields.io/github/license/PixievoltNo1/svelte-webext-storage-adapter.svg)](https://github.com/PixievoltNo1/svelte-webext-storage-adapter/blob/master/LICENSE.txt)
 
 If you're using [Svelte](https://svelte.dev/) v3 to make a [WebExtension](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions) for Firefox or Chrome, you can use this to create [writable stores](https://svelte.dev/tutorial/writable-stores) that are backed by your extension's storage. Handy features are provided to you right out of the box:
 
@@ -242,9 +242,9 @@ $: reactToHere( $here );
 
 ## Tip: Use with `svelte-writable-derived`
 
-<i>Full disclosure: I, Pikadude, am the author of `svelte-writable-derived`. If you find this tip helpful, now you have </i>two<i> reasons to <a href="#-support-the-developer">support me!</a></i>
+<i>Full disclosure: I, Pixievolt, am the author of `svelte-writable-derived`. If you find this tip helpful, now you have </i>two<i> reasons to <a href="#-support-the-developer">support me!</a></i>
 
-Chrome's implementation of `chrome.storage` can't safely store anything besides booleans, numbers, strings, and arrays. If you need something more complex, you can use the [`svelte-writable-derived`](https://github.com/PikadudeNo1/svelte-writable-derived) package to translate your data to & from its storage-safe form.
+Chrome's implementation of `chrome.storage` can't safely store anything besides booleans, numbers, strings, and arrays. If you need something more complex, you can use the [`svelte-writable-derived`](https://github.com/PixievoltNo1/svelte-writable-derived) package to translate your data to & from its storage-safe form.
 
 ```javascript
 import webextStorageAdapter from "svelte-webext-storage-adapter";
@@ -273,11 +273,11 @@ I muchly appreciate any way you'd like to show your thanks - knowing people are 
 
 ## 💸 ... with money
 
-[I'm on Ko-Fi!](https://ko-fi.com/pikadudenoone) If you'd like to make a recurring donation, first please help me afford Ko-Fi Gold!
+One-time & recurring donations alike are accepted on [Sponsus!](https://sponsus.org/u/pixievoltno1)
 
 ## 💌 ... with kind words
 
-Current contact info is on [this page](https://pikadudeno1.com/contact/) - or you can create an "issue" on this repo just to say thanks! Thank-you "issues" will be closed right away, but are treasured regardless~
+Current contact info is on [this page](https://pixievoltno1.com/contact/) - or you can create an "issue" on this repo just to say thanks! Thank-you "issues" will be closed right away, but are treasured regardless~
 
 ## 🤝 ... with a job
 
