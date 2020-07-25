@@ -273,7 +273,7 @@ I muchly appreciate any way you'd like to show your thanks - knowing people are 
 
 ## 💸 ... with money
 
-One-time & recurring donations alike are accepted on [Sponsus!](https://sponsus.org/u/pixievoltno1)
+You can make a one-time donation or become an ongoing sponsor at [my Sponsus page](https://sponsus.org/u/pixievoltno1), and sponsors can ask me to prioritize development of this package.
 
 ## 💌 ... with kind words
 
