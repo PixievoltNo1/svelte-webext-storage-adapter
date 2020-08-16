@@ -1,3 +1,9 @@
+## 1.0.2 (August 16, 2020)
+
+No behavioral changes.
+
+- Fixed an erroneously-placed link in the JSDocs for store group objects.
+
 ## 1.0.1 (July 24, 2020)
 
 No behavioral changes.

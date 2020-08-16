@@ -11,8 +11,8 @@ import nullKeysStores from "./nullKeysStores.mjs";
  * @property {!Promise} ready Resolves when the initial read from extension storage is complete.
  * {@link https://github.com/PixievoltNo1/svelte-webext-storage-adapter#property-ready Read more...}
  * @property {function()} unLive Stops listening for changes in extension storage so that the store
- * {@link https://github.com/PixievoltNo1/svelte-webext-storage-adapter#property-unlive Read more...}
  * group can be garbage-collected.
+ * {@link https://github.com/PixievoltNo1/svelte-webext-storage-adapter#property-unlive Read more...}
  */
 
 /**
