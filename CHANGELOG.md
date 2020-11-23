@@ -1,3 +1,9 @@
+## 1.0.3 (November 22, 2020)
+
+No behavioral changes.
+
+- Added repository, exports, & sideEffects fields to package.json
+
 ## 1.0.2 (August 16, 2020)
 
 No behavioral changes.

@@ -1,10 +1,11 @@
 {
 	"name": "svelte-webext-storage-adapter",
-	"version": "1.0.2",
+	"version": "1.0.3",
 	"description": "Svelte stores, backed up by chrome.storage",
 	"keywords": [
 		"svelte",
 		"svelte3",
+		"store",
 		"webextension",
 		"webext",
 		"firefox",
@@ -17,8 +18,14 @@
 	},
 	"homepage": "https://github.com/PixievoltNo1/svelte-webext-storage-adapter",
 	"bugs": "https://github.com/PixievoltNo1/svelte-webext-storage-adapter/issues",
+	"repository": "github:PixievoltNo1/svelte-webext-storage-adapter",
 	"funding": "https://sponsus.org/u/pixievoltno1",
 	"module": "index.mjs",
+	"exports": {
+		".": "./index.mjs",
+		"./package.json": "./package.json"
+	},
+	"sideEffects": false,
 	"files": [
 		"index.mjs",
 		"nullKeysStores.mjs"
