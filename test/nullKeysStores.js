@@ -4,6 +4,9 @@ var { get } = loadEsm("svelte/store");
 var assert = require('assert').strict;
 
 describe("stores property (null keys)", function() {
+	before(function() {
+		if (!runNullKeysStoresTests) { this.skip(); }
+	});
 	specify("has keys that have values", function() {
 		var storageData = {
 			one: "A",
@@ -20,12 +23,6 @@ describe("stores property (null keys)", function() {
 		var {stores} = webextStorageAdapter(null);
 		var testing = stores.anyKey;
 		assert.ok(testing.subscribe && testing.set && testing.update);
-	});
-	specify("keys without values provide the same store if it has a subscription", function() {
-		var {stores} = webextStorageAdapter(null);
-		var testing = stores.anyKey;
-		testing.subscribe(() => {});
-		assert.equal(stores.anyKey, testing);
 	});
 	specify("set is an error in strict mode", function() {
 		"use strict";

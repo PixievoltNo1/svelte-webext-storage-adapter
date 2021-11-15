@@ -25,6 +25,7 @@ describe("keys parameter", function() {
 		assert.deepStrictEqual(actual, new Map( Object.entries(keysParam) ));
 	});
 	specify("null", function() {
+		if (!runNullKeysStoresTests) { return this.skip(); }
 		var {stores} = webextStorageAdapter(null);
 		assert.ok( Boolean(stores.anyKey) );
 	});

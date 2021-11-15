@@ -52,6 +52,10 @@ before(function() {
 		runtime: {},
 		storage: {},
 	};
+	global.runNullKeysStoresTests = Boolean(global.WeakRef && global.FinalizationRegistry);
+	if (!runNullKeysStoresTests) {
+		console.warn("Support for WeakRef and FinalizationRegistry is needed to run nullKeysStores tests.");
+	}
 });
 beforeEach(function() {
 	delete chrome.runtime.lastError;

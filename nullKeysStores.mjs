@@ -1,42 +1,46 @@
 import { writable } from "svelte/store";
 export default function nullKeysStores(sendUpstream) {
 	var filledStores = Object.create(null);
-	var subscribedStores = new Map();
+	var subscribedStores = new Set();
+	var wantedStores = new Map();
+	var registry = new FinalizationRegistry( (key) => wantedStores.delete(key) );
 	var stores = new Proxy(filledStores, {
 		get(target, key) {
-			var foundStore = findStore(key);
-			return foundStore || wrappedWritable(key);
+			if (key in filledStores) {
+				return filledStores[key];
+			} else {
+				let store = wantedStores.get(key);
+				if (store) {
+					store = store.deref();
+				}
+				if (!store) {
+					store = wrappedWritable(key);
+					wantedStores.set( key, new WeakRef(store) );
+					registry.register(store, key);
+				}
+				return store;
+			}
 		},
 		set() {
 			return false;
 		},
 	});
-	function findStore(key) {
-		if (key in filledStores) {
-			return filledStores[key];
-		} else if (subscribedStores.has(key)) {
-			return subscribedStores.get(key);
-		}
-	}
 	
 	var privateSet = Symbol();
 	function wrappedWritable(key) {
 		var { set, update, subscribe } = writable(undefined, () => {
-			checkValidity(key, me);
-			subscribedStores.set(key, me);
+			subscribedStores.add(me);
 			return () => {
-				subscribedStores.delete(key);
+				subscribedStores.delete(me);
 			};
 		});
 		var me = {
 			set: (value) => {
-				checkValidity(key, me);
 				filledStores[key] = me;
 				sendUpstream(key, value);
 				set(value);
 			},
 			update: (updater) => {
-				checkValidity(key, me);
 				filledStores[key] = me;
 				update( (oldValue) => {
 					var newValue = updater(oldValue);
@@ -55,12 +59,6 @@ export default function nullKeysStores(sendUpstream) {
 			},
 		};
 		return me;
-	}
-	function checkValidity(key, store) {
-		var foundStore = findStore(key);
-		if (foundStore && foundStore != store) {
-			throw new Error("Store invalidated");
-		}
 	}
 	var privateSetters = { get: (key) => stores[key][privateSet] };
 	
