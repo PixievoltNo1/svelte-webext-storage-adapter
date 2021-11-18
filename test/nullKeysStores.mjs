@@ -1,7 +1,5 @@
-var loadEsm = require("esm")(module);
-var webextStorageAdapter = loadEsm("../index.mjs").default;
-var { get } = loadEsm("svelte/store");
-var assert = require('assert').strict;
+import webextStorageAdapter from "../index.mjs";
+import { strict as assert } from "assert";
 
 describe("stores property (null keys)", function() {
 	before(function() {
@@ -25,7 +23,6 @@ describe("stores property (null keys)", function() {
 		assert.ok(testing.subscribe && testing.set && testing.update);
 	});
 	specify("set is an error in strict mode", function() {
-		"use strict";
 		var {stores} = webextStorageAdapter(null);
 		assert.throws( () => { stores.anyKey = 1; } );
 	});

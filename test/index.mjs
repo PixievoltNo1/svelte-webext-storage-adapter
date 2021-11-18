@@ -1,7 +1,6 @@
-var loadEsm = require("esm")(module);
-var webextStorageAdapter = loadEsm("../index.mjs").default;
-var { get } = loadEsm("svelte/store");
-var assert = require('assert').strict;
+import webextStorageAdapter from "../index.mjs";
+import { get } from "svelte/store";
+import { strict as assert } from "assert";
 
 describe("keys parameter", function() {
 	specify("string", function() {
@@ -94,7 +93,6 @@ describe("stores property (non-null keys)", function() {
 		assert.ok(testing.subscribe && testing.set && testing.update);
 	});
 	specify("set is an error in strict mode", function() {
-		"use strict";
 		var {stores} = webextStorageAdapter("example");
 		assert.throws( () => { stores.example = 1; } );
 	});
@@ -173,11 +171,12 @@ describe("unLive property", function() {
 			},
 			removeListener(fn) {
 				assert.equal(listener, fn);
-				passing = true;
+				passed = true;
 			},
 		}
 		var {unLive} = webextStorageAdapter("unused");
 		unLive();
+		assert.ok(passed);
 	});
 });
 function errorTests(callbackArgs, testTemplate) {
