@@ -119,6 +119,8 @@ export default function webextStorageAdapter(keys, options = {}) {
 		}
 		if (eventSource) {
 			eventSource.addListener(receiveChanges);
+		} else {
+			throw new TypeError("This area doesn't support live updates");
 		}
 	}
 	function receiveChanges(changes, area) {

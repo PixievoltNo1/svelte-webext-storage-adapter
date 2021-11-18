@@ -60,6 +60,11 @@ describe("live option", function() {
 		};
 		liveTest(done);
 	});
+	specify("true throws when listening fails", function() {
+		var storageArea = makeStorageArea();
+		delete storageArea.onChanged;
+		assert.throws( () => webextStorageAdapter("example", {storageArea}) );
+	});
 	specify("false", function() {
 		chrome.storage.sync.onChanged.addListener = () => { assert.fail(); }
 		webextStorageAdapter("unused", {live: false});

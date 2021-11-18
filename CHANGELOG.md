@@ -2,6 +2,7 @@
 
 - Breaking change: Using `webextStorageAdapter(null)` now requires support for [`WeakRef`](https://caniuse.com/mdn-javascript_builtins_weakref) and [`FinalizationRegistry`](https://caniuse.com/mdn-javascript_builtins_finalizationregistry)
 - Improved: There is no longer any such thing as an "invalid store". A store's methods will not by themselves throw an error, regardless of circumstances.
+- Breaking change: Using the default `live: true` option with a 3rd-party `storageArea` that doesn't support it now throws an error. To continue using such an area, specify `live: false` in the options.
 
 ## 1.0.3 (November 22, 2020)
 
