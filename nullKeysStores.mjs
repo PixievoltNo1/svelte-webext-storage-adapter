@@ -8,18 +8,17 @@ export default function nullKeysStores(sendUpstream) {
 		get(target, key) {
 			if (key in filledStores) {
 				return filledStores[key];
-			} else {
-				let store = wantedStores.get(key);
-				if (store) {
-					store = store.deref();
-				}
-				if (!store) {
-					store = wrappedWritable(key);
-					wantedStores.set( key, new WeakRef(store) );
-					registry.register(store, key);
-				}
-				return store;
 			}
+			let store = wantedStores.get(key);
+			if (store) {
+				store = store.deref();
+			}
+			if (!store) {
+				store = wrappedWritable(key);
+				wantedStores.set( key, new WeakRef(store) );
+				registry.register(store, key);
+			}
+			return store;
 		},
 		set() {
 			return false;
