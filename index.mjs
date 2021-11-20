@@ -4,37 +4,37 @@ import nullKeysStores from "./nullKeysStores.mjs";
 
 /**
  * Returned by webextStorageAdapter. Provides stores, plus properties that concern all of them.
- * {@link https://github.com/PixievoltNo1/svelte-webext-storage-adapter#returned-value-store-group Read more...}
+ * [Read more...](https://github.com/PixievoltNo1/svelte-webext-storage-adapter#returned-value-store-group)
  * @typedef {Object} StoreGroup
  * @property {!Object<string,!Object>} stores Writable stores for each key in extension storage.
- * {@link https://github.com/PixievoltNo1/svelte-webext-storage-adapter#property-stores Read more...}
+ * [Read more...](https://github.com/PixievoltNo1/svelte-webext-storage-adapter#property-stores)
  * @property {!Promise} ready Resolves when the initial read from extension storage is complete.
- * {@link https://github.com/PixievoltNo1/svelte-webext-storage-adapter#property-ready Read more...}
+ * [Read more...](https://github.com/PixievoltNo1/svelte-webext-storage-adapter#property-ready)
  * @property {function()} unLive Stops listening for changes in extension storage so that the store
  * group can be garbage-collected.
- * {@link https://github.com/PixievoltNo1/svelte-webext-storage-adapter#property-unlive Read more...}
+ * [Read more...](https://github.com/PixievoltNo1/svelte-webext-storage-adapter#property-unlive)
  */
 
 /**
  * Create Svelte stores based on data from `chrome.storage`.
- * {@link https://github.com/PixievoltNo1/svelte-webext-storage-adapter#default-export-webextstorageadapter Read more...}
+ * [Read more...](https://github.com/PixievoltNo1/svelte-webext-storage-adapter#default-export-webextstorageadapter)
  * @param {string|string[]|!Object<string,*>|null} keys Keys from extension storage to use, or
  * `null` to use the entire area.
- * {@link https://github.com/PixievoltNo1/svelte-webext-storage-adapter#parameter-keys Read more...}
+ * [Read more...](https://github.com/PixievoltNo1/svelte-webext-storage-adapter#parameter-keys)
  * @param {Object} [options] Additional parameters.
- * {@link https://github.com/PixievoltNo1/svelte-webext-storage-adapter#parameter-options Read more...}
+ * [Read more...](https://github.com/PixievoltNo1/svelte-webext-storage-adapter#parameter-options)
  * @param {!Object} [options.storageArea=chrome.storage.sync] The StorageArea where store values
  * will be read from & written to.
- * {@link https://github.com/PixievoltNo1/svelte-webext-storage-adapter#storagearea Read more...}
+ * [Read more...](https://github.com/PixievoltNo1/svelte-webext-storage-adapter#storagearea)
  * @param {boolean} [options.live=true] Whether the stores will be updated in response to changes in
  * extension storage made elsewhere.
- * {@link https://github.com/PixievoltNo1/svelte-webext-storage-adapter#live Read more...}
+ * [Read more...](https://github.com/PixievoltNo1/svelte-webext-storage-adapter#live)
  * @param {function(!Object,!Object)} [options.onSetError] Will be called if writing to extension
  * storage fails.
- * {@link https://github.com/PixievoltNo1/svelte-webext-storage-adapter#onseterror Read more...}
+ * [Read more...](https://github.com/PixievoltNo1/svelte-webext-storage-adapter#onseterror)
  * @returns {StoreGroup} A store group object. Object creation is synchronous, but data from
  * extension storage isn't available until the `ready` property's Promise resolves.
- * {@link https://github.com/PixievoltNo1/svelte-webext-storage-adapter#returned-value-store-group Read more...}
+ * [Read more...](https://github.com/PixievoltNo1/svelte-webext-storage-adapter#returned-value-store-group)
  */
 export default function webextStorageAdapter(keys, options = {}) {
 	var {
