@@ -1,4 +1,4 @@
-## Unreleased (will be 2.0.0)
+## 2.0.0 (November 20, 2021)
 
 - Breaking change: Using `webextStorageAdapter(null)` now requires support for [`WeakRef`](https://caniuse.com/mdn-javascript_builtins_weakref) and [`FinalizationRegistry`](https://caniuse.com/mdn-javascript_builtins_finalizationregistry)
 - Improved: There is no longer any such thing as an "invalid store". A store's methods will not by themselves throw an error, regardless of circumstances.

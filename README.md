@@ -5,7 +5,7 @@ If you're using [Svelte](https://svelte.dev/) v3 to make a [WebExtension](https:
 
 * **Flexible:** This package can work with a part of or the entirety of any area of `chrome.storage`, including areas from 3rd-party packages.
 * **Automatic batching:** Save on storage writes when all your store changes are batched up to be sent out at the next Svelte tick.
-* **Live updates:** If you'd like, this package will handle listening for storage changes for you.
+* **Live updates:** If you'd like, this package will handle listening for storage changes for you, using the modern `StorageArea.onChanged` event that 3rd-party areas can use, and falling back on `chrome.storage.onChanged` if needed.
 
 This project has a [Code of Conduct](CODE_OF_CONDUCT.md). By participating in the Git repo or issues tracker, you agree to be as courteous, welcoming, and generally a lovely person as its terms require. 😊
 
@@ -55,7 +55,7 @@ storeGroup.ready.then( () => {
 
 <i>string, array, object, or `null`</i>
 
-This can be any of the same values accepted by [`StorageArea.get`](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/storage/StorageArea/get). Using `null` will allow the store group to read and write any key in storage. Unlike `StorageArea.get`, default values specified in the object form are guaranteed to survive the round trip.
+This can be any of the same values accepted by [`StorageArea.get`](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/storage/StorageArea/get). Using `null` will allow the store group to read and write any key in storage. Unlike `StorageArea.get`, default values specified in the object form will survive the round trip regardless of type.
 
 ```javascript
 // Example: Specifying keys with default values
@@ -90,18 +90,18 @@ var syncGroup = webextStorageAdapter(null);
 
 It's possible to use `StorageArea` objects not originally part of `chrome.storage`, such as the `chrome-storage-largeSync` package (not linking as it seems to be unmaintained as of this writing).
 
-Implementors of such objects must provide `get` and `set` methods compatible with [Chrome's implementation](https://developer.chrome.com/extensions/storage#type-StorageArea) (this package does not support Promise-using versions of those methods). For the `live` option below to work, they must also implement the `onChanged` property introduced in Chrome 73. They may indicate errors either by setting `chrome.runtime.lastError` (⚠️ but they need to delete it afterwards), or by passing an extra parameter to the callbacks.
+Implementors of such objects must provide [`StorageArea`](https://developer.chrome.com/extensions/storage#type-StorageArea)'s `get` and `set` methods, accepting callbacks. For the `live` option below to work, they must also implement the `onChanged` property. They may indicate errors either by setting `chrome.runtime.lastError` (⚠️ but they need to delete it afterwards), or by passing an extra parameter to the callbacks.
 
 #### `live`
 
 <i>boolean</i><br>
 <i>Default: `true`</i>
 
-If `true`, `webextStorageAdapter` will attempt to listen for changes to `options.storageArea` and propagate them to the stores. If a key is deleted from storage, this will set the key's corresponding store to its default value if one was specified in the `keys` parameter, or `undefined` otherwise.
+If `true`, `webextStorageAdapter` will listen for changes to `options.storageArea` and propagate them to the stores. If a key is deleted from storage, this will set the key's corresponding store to its default value if one was specified in the `keys` parameter, or `undefined` otherwise.
 
 This will prevent the store group from being garbage-collected. If this is a concern, you can call the group's [`unLive` method](#property-unlive) when you're done with it.
 
-`webextStorageAdapter` supports both `options.storageArea.onChanged` and `chrome.storage.onChanged`.
+This throws an error if used with a 3rd-party area that doesn't support it.
 
 ```javascript
 // Example
@@ -159,18 +159,6 @@ console.log( Object.keys(storeGroup.stores) ); // ["tooBad"]
 var storeGroup2 = webextStorageAdapter(["thing1", "thing2"]);
 console.log( Object.keys(storeGroup2.stores) ); // ["thing1", "thing2"]
 ```
-
-##### ⚠️ Caution: When `keys == null`, unused stores may be invalidated
-
-When all of the following are true for a given property of `stores`...
-
-* `null` was passed as the `keys` parameter to `webextStorageAdapter`
-* There is no known value for the property's store, whether set directly or obtained from `options.storageArea`
-* There are no subscribers for the property's store
-
-... then every read of that property will result in a different store. When one such store's `get`, `update`, or `subscribe` is used, all others will be invalidated. If all the above conditions are still true when a value arrives from `options.storageArea`, *all* existing stores will be invalidated! (The next read will provide a valid store.) When a store is invalidated, all of its methods will throw an error.
-
-The best way to avoid invalid stores is to subscribe to one as soon as you get it. [Auto-subscriptions](https://svelte.dev/tutorial/auto-subscriptions) are a great way to do this inside a Svelte component.
 
 #### Property: `ready`
 
@@ -265,7 +253,9 @@ export { exportedStores as stores, ready, exportedStores as default };
 
 ## Browser compatibility
 
-This package supports any version of Firefox or Chrome with support for `chrome.runtime`, `chrome.storage`, and ECMAScript 6th Edition. If `webextStorageAdapter(null)` is not used, transpilers and polyfills may be used to fill in for missing ECMAScript 6 support.
+This package officially supports Firefox and Chrome. Other browsers with the `chrome.storage` and `chrome.runtime` APIs aren't tested, but bug reports and pull requests for them are welcome.
+
+If you don't use `webextStorageAdapter(null)`, support for ECMAScript 6th Edition is required, but transpilers and polyfills may be used. If you *do* use `webextStorageAdapter(null)`, support for [`WeakRef`](https://caniuse.com/mdn-javascript_builtins_weakref) and [`FinalizationRegistry`](https://caniuse.com/mdn-javascript_builtins_finalizationregistry) are required, and transpilers/polyfills are *not* supported.
 
 # 💖 Support the developer
 
