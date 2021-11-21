@@ -21,7 +21,6 @@ This project has a [Code of Conduct](CODE_OF_CONDUCT.md). By participating in th
       - [`onSetError()`](#onseterror)
     + [Returned value: Store group](#returned-value-store-group)
       - [Property: `stores`](#property-stores)
-        * [⚠️ Caution: When `keys == null`, unused stores may be invalidated](#%EF%B8%8F-caution-when-keys--null-unused-stores-may-be-invalidated)
       - [Property: `ready`](#property-ready)
       - [Property: `unLive()`](#property-unlive)
   * [Suggested usage: Dedicated module](#suggested-usage-dedicated-module)
