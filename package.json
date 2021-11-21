@@ -31,7 +31,8 @@
 		"nullKeysStores.mjs"
 	],
 	"scripts": {
-		"test": "mocha"
+		"test": "mocha",
+		"prepublishOnly": "npm test"
 	},
 	"peerDependencies": {
 		"svelte": "^3.0.0"
