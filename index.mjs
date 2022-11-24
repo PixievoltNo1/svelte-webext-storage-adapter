@@ -79,8 +79,9 @@ export default function webextStorageAdapter(keys, options = {}) {
 		if (!setItems) {
 			setItems = Object.create(null);
 			tick().then( () => {
-				storageArea.set(setItems, (error = chrome.runtime.lastError) => {
-					if (error) { onSetError(error, setItems); }
+				let currentSetItems = setItems;
+				storageArea.set(currentSetItems, (error = chrome.runtime.lastError) => {
+					if (error) { onSetError(error, currentSetItems); }
 				});
 				setItems = null;
 			} );
