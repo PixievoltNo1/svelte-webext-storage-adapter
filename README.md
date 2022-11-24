@@ -9,6 +9,8 @@ If you're using [Svelte](https://svelte.dev/) v3 to make a [WebExtension](https:
 
 This project has a [Code of Conduct](CODE_OF_CONDUCT.md). By participating in the Git repo or issues tracker, you agree to be as courteous, welcoming, and generally a lovely person as its terms require. 😊
 
+👀 [**Version 3 is in planning!**](https://github.com/PixievoltNo1/svelte-webext-storage-adapter/issues/14) Leave your feedback and help it be the best version yet!
+
 <!-- Table of contents generated mostly by the markdown-toc package - however, it includes emoji in the URLs, and they need to be stripped for GitHub -->
 <!-- toc -->
 
