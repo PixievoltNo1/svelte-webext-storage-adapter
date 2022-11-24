@@ -1,4 +1,10 @@
+## 2.0.2 (November 24, 2022)
+
+- Fixed `onSetError` not receiving the correct `setItems` object (#15)
+
 ## 2.0.1 (November 20, 2021)
+
+No behavioral changes.
 
 - Deleted the now-dead link about "invalid stores" from the readme's table of contents
 
