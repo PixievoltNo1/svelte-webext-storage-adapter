@@ -75,11 +75,15 @@ describe("onSetError option", function() {
 		chrome.storage.sync.set = override;
 		var {stores} = webextStorageAdapter(setKey, {
 			onSetError(error, setItems) {
-				assert.equal(error, expectedError);
-				assert.deepStrictEqual(
-					new Map( Object.entries(setItems) ),
-					new Map( [[setKey, setValue]] )
-				);
+				try {
+					assert.equal(error, expectedError);
+					assert.deepStrictEqual(
+						new Map( Object.entries(setItems) ),
+						new Map( [[setKey, setValue]] )
+					);
+				} catch (o_o) {
+					return done(o_o);
+				}
 				done();
 			}
 		});
@@ -156,10 +160,11 @@ describe("ready property", function() {
 	errorTests([null], function({done, override, expectedError}) {
 		chrome.storage.sync.get = override;
 		var {ready} = webextStorageAdapter("unused");
-		ready.catch( (error) => {
+		ready.then( () => {
+			assert.fail("no error");
+		}, (error) => {
 			assert.equal(error, expectedError);
-			done();
-		} );
+		} ).then( () => done(), done );
 	});
 });
 describe("unLive property", function() {
@@ -184,16 +189,18 @@ function errorTests(callbackArgs, testTemplate) {
 	var tests = [
 		{
 			name: "checks chrome.runtime.lastError",
-			override: (...args) => {
+			async override(...args) {
 				var callback = args.pop();
+				await Promise.resolve();
 				chrome.runtime.lastError = expectedError;
 				callback(...callbackArgs);
 			},
 		},
 		{
 			name: "checks callback parameter",
-			override: (...args) => {
+			async override(...args) {
 				var callback = args.pop();
+				await Promise.resolve();
 				callback(...callbackArgs, expectedError);
 			},
 		},
