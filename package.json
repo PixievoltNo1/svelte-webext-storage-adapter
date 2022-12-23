@@ -19,7 +19,7 @@
 	"homepage": "https://github.com/PixievoltNo1/svelte-webext-storage-adapter",
 	"bugs": "https://github.com/PixievoltNo1/svelte-webext-storage-adapter/issues",
 	"repository": "github:PixievoltNo1/svelte-webext-storage-adapter",
-	"funding": "https://sponsus.org/u/pixievoltno1",
+	"funding": "https://ko-fi.com/pixievoltno1",
 	"module": "index.mjs",
 	"exports": {
 		".": "./index.mjs",
