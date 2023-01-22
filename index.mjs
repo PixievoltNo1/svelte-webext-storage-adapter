@@ -50,7 +50,7 @@ export default function webextStorageAdapter(keys, options = {}) {
 		var { stores, privateSetters } = nullKeysStores(sendUpstream);
 	} else {
 		if (typeof keys == "object" && !Array.isArray(keys)) {
-			defaults = Object.assign(Object.create(null), keys);
+			Object.assign(defaults, keys);
 			keys = Object.keys(keys);
 		}
 		var stores = Object.create(null), privateSetters = new Map();
