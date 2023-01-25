@@ -45,48 +45,47 @@ export default function webextStorageAdapter(keys, options = {}) {
 		},
 	} = options;
 	
-	var defaults = Object.create(null);
+	var defaults = Object.create(null), skipNextCollect = false, setItems;
+	function makeStore(forKey) {
+		var store = writable(defaults[forKey]);
+		skipNextCollect = true;
+		store.subscribe( (value) => {
+			if (skipNextCollect) {
+				skipNextCollect = false;
+				return;
+			}
+			if (!setItems) {
+				setItems = Object.create(null);
+				tick().then(() => {
+					let currentSetItems = setItems;
+					storageArea.set(currentSetItems, (error = chrome.runtime.lastError) => {
+						if (error) { onSetError(error, currentSetItems); }
+					});
+					setItems = null;
+				});
+			}
+			setItems[forKey] = value;
+		} );
+		return store;
+	}
+	function receiveFromStorage(key, value) {
+		skipNextCollect = true;
+		stores[key].set(value);
+		skipNextCollect = false;
+	}
 	if (keys == null) {
-		var { stores, privateSetters } = nullKeysStores(sendUpstream);
+		var { stores, resetStore } = nullKeysStores(makeStore, receiveFromStorage);
 	} else {
 		if (typeof keys == "object" && !Array.isArray(keys)) {
 			Object.assign(defaults, keys);
 			keys = Object.keys(keys);
 		}
-		var stores = Object.create(null), privateSetters = new Map();
+		var stores = Object.create(null);
 		for (let key of (Array.isArray(keys) ? keys : [keys])) {
-			let { set, update, subscribe } = writable( defaults[key] );
-			privateSetters.set(key, set);
-			stores[key] = {
-				set: (value) => {
-					sendUpstream(key, value);
-					set(value);
-				},
-				update: (updater) => {
-					update( (oldValue) => {
-						var newValue = updater(oldValue);
-						sendUpstream(key, newValue);
-						return newValue;
-					} );
-				},
-				subscribe,
-			};
+			stores[key] = makeStore(key);
 		}
 		Object.freeze(stores);
-	}
-	var setItems;
-	function sendUpstream(key, value) {
-		if (!setItems) {
-			setItems = Object.create(null);
-			tick().then( () => {
-				let currentSetItems = setItems;
-				storageArea.set(currentSetItems, (error = chrome.runtime.lastError) => {
-					if (error) { onSetError(error, currentSetItems); }
-				});
-				setItems = null;
-			} );
-		}
-		setItems[key] = value;
+		var resetStore = (key) => { receiveFromStorage(key, defaults[key]); };
 	}
 	
 	var get = new Promise( (resolve, reject) => {
@@ -100,7 +99,7 @@ export default function webextStorageAdapter(keys, options = {}) {
 	} );
 	var ready = get.then( (results) => {
 		for (let key of Object.keys(results)) {
-			privateSetters.get(key)(results[key]);
+			receiveFromStorage(key, results[key]);
 		}
 		return true;
 	} );
@@ -129,9 +128,9 @@ export default function webextStorageAdapter(keys, options = {}) {
 		for (let key of Object.keys(changes)) {
 			if ( !(keys == null || key in stores) ) { continue; }
 			if ("newValue" in changes[key]) {
-				privateSetters.get(key)( changes[key].newValue );
+				receiveFromStorage(key, changes[key].newValue);
 			} else {
-				privateSetters.get(key)( defaults[key] );
+				resetStore(key);
 			}
 		}
 	}

@@ -1,7 +1,6 @@
-import { writable } from "svelte/store";
-export default function nullKeysStores(sendUpstream) {
+export default function nullKeysStores(makeStore, receiveFromStorage) {
 	var filledStores = Object.create(null);
-	var subscribedStores = new Set();
+	var subscribedStores = new Map();
 	var wantedStores = new Map();
 	var registry = new FinalizationRegistry( (key) => wantedStores.delete(key) );
 	var stores = new Proxy(filledStores, {
@@ -14,7 +13,7 @@ export default function nullKeysStores(sendUpstream) {
 				store = store.deref();
 			}
 			if (!store) {
-				store = wrappedWritable(key);
+				store = initStore(key);
 				wantedStores.set( key, new WeakRef(store) );
 				registry.register(store, key);
 			}
@@ -25,41 +24,35 @@ export default function nullKeysStores(sendUpstream) {
 		},
 	});
 	
-	var privateSet = Symbol();
-	function wrappedWritable(key) {
-		var { set, update, subscribe } = writable(undefined, () => {
-			subscribedStores.add(me);
+	var skipFill = false;
+	function initStore(key) {
+		var store = makeStore(key);
+		var innerSubscribe = store.subscribe;
+		store.subscribe = (subscriber) => {
+			var key = Symbol();
+			subscribedStores.set(key, store);
+			var unsubscribe = innerSubscribe(subscriber);
 			return () => {
-				subscribedStores.delete(me);
+				subscribedStores.delete(key);
+				unsubscribe();
 			};
-		});
-		var me = {
-			set: (value) => {
-				filledStores[key] = me;
-				sendUpstream(key, value);
-				set(value);
-			},
-			update: (updater) => {
-				filledStores[key] = me;
-				update( (oldValue) => {
-					var newValue = updater(oldValue);
-					sendUpstream(key, newValue);
-					return newValue;
-				} );
-			},
-			subscribe,
-			[privateSet]: (value) => {
-				if (value === undefined) {
-					delete filledStores[key];
-				} else {
-					filledStores[key] = me;
-				}
-				set(value);
-			},
 		};
-		return me;
+		skipFill = true;
+		innerSubscribe( (value) => {
+			if (skipFill) {
+				skipFill = false;
+				return;
+			}
+			filledStores[key] = store;
+		} );
+		return store;
+	};
+	function resetStore(key) {
+		delete filledStores[key];
+		skipFill = true;
+		receiveFromStorage(key, undefined);
+		skipFill = false;
 	}
-	var privateSetters = { get: (key) => stores[key][privateSet] };
 	
-	return { stores, privateSetters };
+	return { stores, resetStore };
 }

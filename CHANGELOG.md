@@ -1,3 +1,7 @@
+## Unpublished
+
+- Changed: Setting a store to the primitive value it already had no longer re-saves that value to storage
+
 ## 2.0.2 (November 24, 2022)
 
 - Fixed `onSetError` not receiving the correct `setItems` object ([#15](https://github.com/PixievoltNo1/svelte-webext-storage-adapter/issues/15))
