@@ -104,27 +104,13 @@ export default function webextStorageAdapter(keys, options = {}) {
 		return true;
 	} );
 	
-	var eventSource, specifiedArea;
 	if (live) {
-		if (storageArea.onChanged) {
-			eventSource = storageArea.onChanged;
-		} else {
-			for (let name of Object.keys(chrome.storage)) {
-				if (chrome.storage[name] == storageArea) {
-					specifiedArea = name;
-					eventSource = chrome.storage.onChanged;
-					break;
-				}
-			}
-		}
-		if (eventSource) {
-			eventSource.addListener(receiveChanges);
-		} else {
+		if (!storageArea.onChanged) {
 			throw new TypeError("This area doesn't support live updates");
 		}
+		storageArea.onChanged.addListener(receiveChanges);
 	}
-	function receiveChanges(changes, area) {
-		if (specifiedArea && area != specifiedArea) { return; }
+	function receiveChanges(changes) {
 		for (let key of Object.keys(changes)) {
 			if ( !(keys == null || key in stores) ) { continue; }
 			if ("newValue" in changes[key]) {
@@ -135,8 +121,7 @@ export default function webextStorageAdapter(keys, options = {}) {
 		}
 	}
 	function unLive() {
-		if (!eventSource) { return; }
-		eventSource.removeListener(receiveChanges);
+		storageArea.onChanged.removeListener(receiveChanges);
 	}
 	
 	return { stores, ready, unLive };

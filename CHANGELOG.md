@@ -1,6 +1,7 @@
 ## Unpublished
 
-- Breaking change: Required ECMAScript support increased from 6th Edition to 2020 Edition
+- Breaking change: Required ECMAScript support increased from 6th Edition to 2020 Edition (Chrome 80+ or Firefox 74+)
+- Breaking change: The default `live: true` option now requires support for [`StorageArea.onChanged`](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/storage/StorageArea/onChanged) (Firefox 101+)
 - Changed: Setting a store to the primitive value it already had no longer re-saves that value to storage
 
 ## 2.0.2 (November 24, 2022)
