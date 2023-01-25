@@ -5,13 +5,7 @@ export default function nullKeysStores(makeStore, receiveFromStorage) {
 	var registry = new FinalizationRegistry( (key) => wantedStores.delete(key) );
 	var stores = new Proxy(filledStores, {
 		get(target, key) {
-			if (key in filledStores) {
-				return filledStores[key];
-			}
-			let store = wantedStores.get(key);
-			if (store) {
-				store = store.deref();
-			}
+			let store = target[key] ?? wantedStores.get(key)?.deref();
 			if (!store) {
 				store = initStore(key);
 				wantedStores.set( key, new WeakRef(store) );

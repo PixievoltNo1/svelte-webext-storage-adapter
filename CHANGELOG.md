@@ -1,5 +1,6 @@
 ## Unpublished
 
+- Breaking change: Required ECMAScript support increased from 6th Edition to 2020 Edition
 - Changed: Setting a store to the primitive value it already had no longer re-saves that value to storage
 
 ## 2.0.2 (November 24, 2022)
