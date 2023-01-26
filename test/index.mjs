@@ -40,24 +40,13 @@ describe("storageArea option", function() {
 	});
 });
 describe("live option", function() {
-	function liveTest(done) {
+	specify("true (storageArea.onChanged)", function(done) {
 		var expectedKey = "example", expectedValue = "hooray";
-		var {stores} = webextStorageAdapter(expectedKey);
-		chrome.storage.sync.set( {[expectedKey]: expectedValue} );
-		stores[expectedKey].subscribe( (value) => {
+		var { stores } = webextStorageAdapter(expectedKey);
+		chrome.storage.sync.set({ [expectedKey]: expectedValue });
+		stores[expectedKey].subscribe((value) => {
 			if (value == expectedValue) { done(); }
-		} );
-	}
-	specify("true (storageArea.onChanged)", liveTest);
-	specify("true (chrome.storage.onChanged)", function(done) {
-		var onChanged = chrome.storage.sync.onChanged;
-		delete chrome.storage.sync.onChanged;
-		chrome.storage.onChanged = {
-			addListener(fn) {
-				onChanged.addListener( (changes) => fn(changes, "sync") );
-			},
-		};
-		liveTest(done);
+		});
 	});
 	specify("true throws when listening fails", function() {
 		var storageArea = makeStorageArea();
@@ -67,27 +56,6 @@ describe("live option", function() {
 	specify("false", function() {
 		chrome.storage.sync.onChanged.addListener = () => { assert.fail(); }
 		webextStorageAdapter("unused", {live: false});
-	});
-});
-describe("onSetError option", function() {
-	var setKey = "example", setValue = "oh no";
-	errorTests([], function({done, override, expectedError}) {
-		chrome.storage.sync.set = override;
-		var {stores} = webextStorageAdapter(setKey, {
-			onSetError(error, setItems) {
-				try {
-					assert.equal(error, expectedError);
-					assert.deepStrictEqual(
-						new Map( Object.entries(setItems) ),
-						new Map( [[setKey, setValue]] )
-					);
-				} catch (o_o) {
-					return done(o_o);
-				}
-				done();
-			}
-		});
-		stores[setKey].set(setValue);
 	});
 });
 describe("stores property (non-null keys)", function() {
@@ -167,6 +135,31 @@ describe("ready property", function() {
 		} ).then( () => done(), done );
 	});
 });
+describe("onWrite property", function () {
+	var setKey = "example", setValue = "oh no";
+	specify("accepts a subscriber");
+	specify("subscriber's received Promise resolves when the write is done");
+	errorTests([], function ({ done, override, expectedError }) {
+		this.skip();
+		chrome.storage.sync.set = override;
+		var { stores } = webextStorageAdapter(setKey, {
+			onSetError(error, setItems) {
+				try {
+					assert.equal(error, expectedError);
+					assert.deepStrictEqual(
+						new Map(Object.entries(setItems)),
+						new Map([[setKey, setValue]])
+					);
+				} catch (o_o) {
+					return done(o_o);
+				}
+				done();
+			}
+		});
+		stores[setKey].set(setValue);
+	});
+	specify("returns an unsubscriber")
+});
 describe("unLive property", function() {
 	specify("stops listening", function() {
 		var passed = false, listener;
@@ -207,7 +200,7 @@ function errorTests(callbackArgs, testTemplate) {
 	];
 	for (let {name, override} of tests) {
 		specify(name, function(done) {
-			testTemplate({done, override, expectedError});
+			testTemplate.bind(this)({done, override, expectedError});
 		});
 	}
 }
