@@ -40,12 +40,10 @@ export default function webextStorageAdapter(keys, options = {}) {
 	var {
 		storageArea = chrome.storage.sync,
 		live = true,
-		onSetError = (error, setItems) => {
-			console.error("error: ", error, "\n", "setItems: ", setItems);
-		},
 	} = options;
 	
-	var defaults = Object.create(null), skipNextCollect = false, setItems;
+	var defaults = Object.create(null), skipNextCollect = false, nextSetItems;
+	var onWriteSubscribers = new Set();
 	function makeStore(forKey) {
 		var store = writable(defaults[forKey]);
 		skipNextCollect = true;
@@ -54,17 +52,26 @@ export default function webextStorageAdapter(keys, options = {}) {
 				skipNextCollect = false;
 				return;
 			}
-			if (!setItems) {
-				setItems = Object.create(null);
+			if (!nextSetItems) {
+				nextSetItems = Object.create(null);
 				tick().then(() => {
-					let currentSetItems = setItems;
-					storageArea.set(currentSetItems, (error = chrome.runtime.lastError) => {
-						if (error) { onSetError(error, currentSetItems); }
-					});
-					setItems = null;
+					let setItems = nextSetItems;
+					var write = new Promise( (resolve, reject) => {
+						storageArea.set(setItems, (error = chrome.runtime.lastError) => {
+							if (error) {
+								reject({error, setItems});
+							} else {
+								resolve(true);
+							}
+						});
+					} );
+					for (let subscriber of onWriteSubscribers) {
+						subscriber(write, setItems);
+					}
+					nextSetItems = null;
 				});
 			}
-			setItems[forKey] = value;
+			nextSetItems[forKey] = value;
 		} );
 		return store;
 	}
@@ -86,6 +93,13 @@ export default function webextStorageAdapter(keys, options = {}) {
 		}
 		Object.freeze(stores);
 		var resetStore = (key) => { receiveFromStorage(key, defaults[key]); };
+	}
+	function onWrite(subscriber) {
+		if (typeof subscriber != "function") {
+			throw new TypeError("onWrite must be called with a function");
+		}
+		onWriteSubscribers.add(subscriber);
+		return () => onWriteSubscribers.delete(subscriber);
 	}
 	
 	var get = new Promise( (resolve, reject) => {
@@ -124,5 +138,5 @@ export default function webextStorageAdapter(keys, options = {}) {
 		storageArea.onChanged.removeListener(receiveChanges);
 	}
 	
-	return { stores, ready, unLive };
+	return { stores, onWrite, ready, unLive };
 }

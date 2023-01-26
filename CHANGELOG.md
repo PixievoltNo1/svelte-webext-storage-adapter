@@ -2,6 +2,13 @@
 
 - Breaking change: Required ECMAScript support increased from 6th Edition to 2020 Edition (Chrome 80+ or Firefox 74+)
 - Breaking change: The default `live: true` option now requires support for [`StorageArea.onChanged`](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/storage/StorageArea/onChanged) (Firefox 101+)
+- Added: Use the `onWrite` method for store groups to get notified when StorageArea.set calls start, finish, or fail. An `onSetError` callback could be used like this:
+```javascript
+let storeGroup = webextStorageAdapter(area, keys);
+storeGroup.onWrite( (write) => {
+	write.catch( ({error, setItems}) => onSetError(error, setItems) );
+} );
+```
 - Changed: Setting a store to the primitive value it already had no longer re-saves that value to storage
 
 ## 2.0.2 (November 24, 2022)
