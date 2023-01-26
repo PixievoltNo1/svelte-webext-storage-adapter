@@ -1,15 +1,16 @@
 import webextStorageAdapter from "../index.mjs";
 import { get } from "svelte/store";
 import { strict as assert } from "assert";
+import { createHook } from "async_hooks";
 
 describe("keys parameter", function() {
 	specify("string", function() {
-		var {stores} = webextStorageAdapter("example");
+		var {stores} = webextStorageAdapter("sync", "example");
 		assert.deepStrictEqual(Object.keys(stores), ["example"])
 	});
 	specify("array", function() {
 		var expected = ["one", "two"];
-		var {stores} = webextStorageAdapter(expected);
+		var {stores} = webextStorageAdapter("sync", expected);
 		assert.deepStrictEqual(Object.keys(stores), expected)
 	});
 	specify("object with default values", function() {
@@ -17,7 +18,7 @@ describe("keys parameter", function() {
 			one: "A",
 			two: "B",
 		};
-		var {stores} = webextStorageAdapter(keysParam);
+		var {stores} = webextStorageAdapter("sync", keysParam);
 		var actual = new Map( [...Object.entries(stores)].map( ([key, value]) => {
 			return [key, get(value)];
 		} ) );
@@ -25,24 +26,31 @@ describe("keys parameter", function() {
 	});
 	specify("null", function() {
 		if (!runNullKeysStoresTests) { return this.skip(); }
-		var {stores} = webextStorageAdapter(null);
+		var {stores} = webextStorageAdapter("sync", null);
 		assert.ok( Boolean(stores.anyKey) );
 	});
 });
 describe("storageArea option", function() {
-	specify("non-default", function(done) {
+	specify("string", function(done) {
+		chrome.storage.sync.get = () => {
+			done();
+			return {};
+		};
+		webextStorageAdapter("sync", "unused");
+	});
+	specify("object", function(done) {
 		var storageArea = makeStorageArea();
 		storageArea.get = () => {
 			done();
 			return {};
 		};
-		webextStorageAdapter("unused", {storageArea});
+		webextStorageAdapter(storageArea, "unused");
 	});
 });
 describe("live option", function() {
 	specify("true (storageArea.onChanged)", function(done) {
 		var expectedKey = "example", expectedValue = "hooray";
-		var { stores } = webextStorageAdapter(expectedKey);
+		var {stores} = webextStorageAdapter("sync", expectedKey);
 		chrome.storage.sync.set({ [expectedKey]: expectedValue });
 		stores[expectedKey].subscribe((value) => {
 			if (value == expectedValue) { done(); }
@@ -51,21 +59,21 @@ describe("live option", function() {
 	specify("true throws when listening fails", function() {
 		var storageArea = makeStorageArea();
 		delete storageArea.onChanged;
-		assert.throws( () => webextStorageAdapter("example", {storageArea}) );
+		assert.throws( () => webextStorageAdapter(storageArea, "example") );
 	});
 	specify("false", function() {
 		chrome.storage.sync.onChanged.addListener = () => { assert.fail(); }
-		webextStorageAdapter("unused", {live: false});
+		webextStorageAdapter("sync", "unused", {live: false});
 	});
 });
 describe("stores property (non-null keys)", function() {
 	specify("values are writable stores", function() {
-		var {stores} = webextStorageAdapter("example");
+		var {stores} = webextStorageAdapter("sync", "example");
 		var testing = stores.example;
 		assert.ok(testing.subscribe && testing.set && testing.update);
 	});
 	specify("set is an error in strict mode", function() {
-		var {stores} = webextStorageAdapter("example");
+		var {stores} = webextStorageAdapter("sync", "example");
 		assert.throws( () => { stores.example = 1; } );
 	});
 	specify("store.set sends new values back", function(done) {
@@ -75,7 +83,7 @@ describe("stores property (non-null keys)", function() {
 			assert.equal(data[expected.key], expected.value);
 			done();
 		};
-		var {stores} = webextStorageAdapter(expected.key, {storageArea});
+		var {stores} = webextStorageAdapter(storageArea, expected.key);
 		stores[expected.key].set(expected.value);
 	});
 	specify("store.update sends new values back", function(done) {
@@ -85,15 +93,15 @@ describe("stores property (non-null keys)", function() {
 			assert.equal(data[expected.key], expected.value);
 			done();
 		};
-		var {stores} = webextStorageAdapter(expected.key, {storageArea});
+		var {stores} = webextStorageAdapter(storageArea, expected.key);
 		stores[expected.key].update( () => expected.value );
 	});
 	specify("for live store groups, deleted keys are reset to default", function(done) {
 		var expected = "goodbye";
 		var storageArea = makeStorageArea({nananana: "BATMAN"});
-		var {stores, ready} = webextStorageAdapter({
+		var {stores, ready} = webextStorageAdapter(storageArea, {
 			nananana: expected,
-		}, {storageArea});
+		});
 		ready.then( () => {
 			stores.nananana.subscribe( (value) => {
 				if (value == expected) {
@@ -110,7 +118,7 @@ describe("stores property (non-null keys)", function() {
 			assert.deepStrictEqual(new Map( Object.entries(data) ), expected);
 			done();
 		};
-		var {stores} = webextStorageAdapter([...expected.keys()], {storageArea});
+		var {stores} = webextStorageAdapter(storageArea, [...expected.keys()]);
 		for (let [key, value] of expected.entries()) {
 			stores[key].set(value);
 		}
@@ -120,14 +128,14 @@ describe("ready property", function() {
 	specify("resolves after store values are loaded", function() {
 		var expected = "hooray";
 		var storageArea = makeStorageArea({example: expected});
-		var {stores, ready} = webextStorageAdapter("example", {storageArea});
+		var {stores, ready} = webextStorageAdapter(storageArea, "example");
 		return ready.then( () => {
 			assert.equal(get(stores.example), expected);
 		} );
 	});
 	errorTests([null], function({done, override, expectedError}) {
 		chrome.storage.sync.get = override;
-		var {ready} = webextStorageAdapter("unused");
+		var {ready} = webextStorageAdapter("sync", "unused");
 		ready.then( () => {
 			assert.fail("no error");
 		}, (error) => {
@@ -172,7 +180,7 @@ describe("unLive property", function() {
 				passed = true;
 			},
 		}
-		var {unLive} = webextStorageAdapter("unused");
+		var {unLive} = webextStorageAdapter("sync", "unused");
 		unLive();
 		assert.ok(passed);
 	});

@@ -1,7 +1,16 @@
 ## Unpublished
 
+- Breaking change: The signature of `webextStorageAdapter` is now `(storageArea, keys, {live})`. `onSetError` has been superceded by `onWrite` below.
 - Breaking change: Required ECMAScript support increased from 6th Edition to 2020 Edition (Chrome 80+ or Firefox 74+)
 - Breaking change: The default `live: true` option now requires support for [`StorageArea.onChanged`](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/storage/StorageArea/onChanged) (Firefox 101+)
+- Added: `storageArea` can now be a string, which is used to look up the object in `chrome.storage`.
+```javascript
+/* v2.0 */ let storeGroup = webextStorageAdapter(keys, {storageArea: chrome.storage.local});
+/* v3.0 */ let storeGroup = webextStorageAdapter("local", keys);
+
+/* v2.0 */ let storeGroup = webextStorageAdapter(keys);
+/* v3.0 */ let storeGroup = webextStorageAdapter("sync", keys);
+```
 - Added: Use the `onWrite` method for store groups to get notified when StorageArea.set calls start, finish, or fail. An `onSetError` callback could be used like this:
 ```javascript
 let storeGroup = webextStorageAdapter(area, keys);

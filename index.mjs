@@ -18,29 +18,22 @@ import nullKeysStores from "./nullKeysStores.mjs";
 /**
  * Create Svelte stores based on data from `chrome.storage`.
  * [Read more...](https://github.com/PixievoltNo1/svelte-webext-storage-adapter#default-export-webextstorageadapter)
+ * @param {!Object} [storageArea] The StorageArea where store values will be read from & written to.
+ * [Read more...](https://github.com/PixievoltNo1/svelte-webext-storage-adapter#storagearea)
  * @param {string|string[]|!Object<string,*>|null} keys Keys from extension storage to use, or
  * `null` to use the entire area.
  * [Read more...](https://github.com/PixievoltNo1/svelte-webext-storage-adapter#parameter-keys)
  * @param {Object} [options] Additional parameters.
  * [Read more...](https://github.com/PixievoltNo1/svelte-webext-storage-adapter#parameter-options)
- * @param {!Object} [options.storageArea=chrome.storage.sync] The StorageArea where store values
- * will be read from & written to.
- * [Read more...](https://github.com/PixievoltNo1/svelte-webext-storage-adapter#storagearea)
  * @param {boolean} [options.live=true] Whether the stores will be updated in response to changes in
  * extension storage made elsewhere.
  * [Read more...](https://github.com/PixievoltNo1/svelte-webext-storage-adapter#live)
- * @param {function(!Object,!Object)} [options.onSetError] Will be called if writing to extension
- * storage fails.
- * [Read more...](https://github.com/PixievoltNo1/svelte-webext-storage-adapter#onseterror)
  * @returns {StoreGroup} A store group object. Object creation is synchronous, but data from
  * extension storage isn't available until the `ready` property's Promise resolves.
  * [Read more...](https://github.com/PixievoltNo1/svelte-webext-storage-adapter#returned-value-store-group)
  */
-export default function webextStorageAdapter(keys, options = {}) {
-	var {
-		storageArea = chrome.storage.sync,
-		live = true,
-	} = options;
+export default function webextStorageAdapter(storageArea, keys, options = {}) {
+	var { live = true } = options;
 	
 	var defaults = Object.create(null), skipNextCollect = false, nextSetItems;
 	function makeStore(forKey) {
@@ -79,6 +72,9 @@ export default function webextStorageAdapter(keys, options = {}) {
 		var resetStore = (key) => { receiveFromStorage(key, defaults[key]); };
 	}
 	
+	if (typeof storageArea == "string") {
+		storageArea = chrome.storage[storageArea];
+	}
 	var ready = new Promise( (resolve, reject) => {
 		storageArea.get(keys, (results, error = chrome.runtime.lastError) => {
 			if (error) {
