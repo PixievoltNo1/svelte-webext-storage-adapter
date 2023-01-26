@@ -43,7 +43,6 @@ export default function webextStorageAdapter(keys, options = {}) {
 	} = options;
 	
 	var defaults = Object.create(null), skipNextCollect = false, nextSetItems;
-	var onWriteSubscribers = new Set();
 	function makeStore(forKey) {
 		var store = writable(defaults[forKey]);
 		skipNextCollect = true;
@@ -54,22 +53,7 @@ export default function webextStorageAdapter(keys, options = {}) {
 			}
 			if (!nextSetItems) {
 				nextSetItems = Object.create(null);
-				tick().then(() => {
-					let setItems = nextSetItems;
-					var write = new Promise( (resolve, reject) => {
-						storageArea.set(setItems, (error = chrome.runtime.lastError) => {
-							if (error) {
-								reject({error, setItems});
-							} else {
-								resolve(true);
-							}
-						});
-					} );
-					for (let subscriber of onWriteSubscribers) {
-						subscriber(write, setItems);
-					}
-					nextSetItems = null;
-				});
+				tick().then(sendToStorage);
 			}
 			nextSetItems[forKey] = value;
 		} );
@@ -94,6 +78,37 @@ export default function webextStorageAdapter(keys, options = {}) {
 		Object.freeze(stores);
 		var resetStore = (key) => { receiveFromStorage(key, defaults[key]); };
 	}
+	
+	var ready = new Promise( (resolve, reject) => {
+		storageArea.get(keys, (results, error = chrome.runtime.lastError) => {
+			if (error) {
+				reject(error);
+			} else {
+				for (let key of Object.keys(results)) {
+					receiveFromStorage(key, results[key]);
+				}
+				resolve(true);
+			}
+		});
+	} );
+
+	var onWriteSubscribers = new Set();
+	function sendToStorage() {
+		let setItems = nextSetItems;
+		var write = new Promise((resolve, reject) => {
+			storageArea.set(setItems, (error = chrome.runtime.lastError) => {
+				if (error) {
+					reject({ error, setItems });
+				} else {
+					resolve(true);
+				}
+			});
+		});
+		for (let subscriber of onWriteSubscribers) {
+			subscriber(write, setItems);
+		}
+		nextSetItems = null;
+	}
 	function onWrite(subscriber) {
 		if (typeof subscriber != "function") {
 			throw new TypeError("onWrite must be called with a function");
@@ -101,22 +116,6 @@ export default function webextStorageAdapter(keys, options = {}) {
 		onWriteSubscribers.add(subscriber);
 		return () => onWriteSubscribers.delete(subscriber);
 	}
-	
-	var get = new Promise( (resolve, reject) => {
-		storageArea.get(keys, (results, error = chrome.runtime.lastError) => {
-			if (error) {
-				reject(error);
-			} else {
-				resolve(results);
-			}
-		});
-	} );
-	var ready = get.then( (results) => {
-		for (let key of Object.keys(results)) {
-			receiveFromStorage(key, results[key]);
-		}
-		return true;
-	} );
 	
 	if (live) {
 		if (!storageArea.onChanged) {
@@ -138,5 +137,5 @@ export default function webextStorageAdapter(keys, options = {}) {
 		storageArea.onChanged.removeListener(receiveChanges);
 	}
 	
-	return { stores, onWrite, ready, unLive };
+	return { stores, ready, onWrite, unLive };
 }
