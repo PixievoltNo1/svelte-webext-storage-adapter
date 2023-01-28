@@ -204,6 +204,22 @@ onDestroy(unsubscribe);
 {/if}
 ```
 
+### Handling write errors with `unhandledrejection`
+
+The `write` promise described above is created whether or not `onWrite` has subscribers. If no subscriber adds a rejection handler to it, a storage write error causes an [`unhandledrejection` event](https://developer.mozilla.org/en-US/docs/Web/API/Window/unhandledrejection_event). If this event also has no handlers, or none of them call `event.preventDefault()`, the rejection is logged to the browser console.
+
+```javascript
+// Example
+
+window.addEventHandler("unhandledrejection", (event) => {
+	if ("setItems" in event.reason) {
+		let {error, setItems} = event.reason;
+		reportProblem(error);
+		markUnsaved(Object.keys(setItems));
+	}
+});
+```
+
 ### Property: `unLive()`
 
 <i>No parameters</i>
