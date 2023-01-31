@@ -144,29 +144,67 @@ describe("ready property", function() {
 	});
 });
 describe("onWrite property", function () {
-	var setKey = "example", setValue = "oh no";
-	specify("accepts a subscriber");
-	specify("subscriber's received Promise resolves when the write is done");
+	specify("accepts a subscriber", function(done) {
+		var key = "example";
+		var expectedSetItems = {[key]: "yo", __proto__: null};
+		var { stores, onWrite } = webextStorageAdapter("sync", key);
+		onWrite( (write, setItems) => {
+			try {
+				assert.ok(write instanceof Promise);
+				assert.deepStrictEqual(setItems, expectedSetItems);
+			} catch (o_o) {
+				done(o_o);
+			}
+			done();
+		} );
+		stores[key].set(expectedSetItems[key]);
+	});
+	specify("subscriber's received Promise resolves when the write is done", function (done) {
+		var key = "example";
+		var expectedData = { [key]: "yo" };
+		var { stores, onWrite } = webextStorageAdapter("sync", key);
+		onWrite( (write) => {
+			write.then( () => {
+				chrome.storage.sync.get(key, (data) => {
+					try {
+						assert.deepStrictEqual(data, expectedData);
+					} catch (o_o) {
+						done(o_o);
+					}
+					done();
+				});
+			} );
+		} );
+		stores[key].set(expectedData[key]);
+	});
 	errorTests([], function ({ done, override, expectedError }) {
-		this.skip();
+		var key = "example";
+		var expectedSetItems = { [key]: "yo", __proto__: null };
 		chrome.storage.sync.set = override;
-		var { stores } = webextStorageAdapter(setKey, {
-			onSetError(error, setItems) {
+		var { stores, onWrite } = webextStorageAdapter("sync", key);
+		onWrite( (write) => {
+			write.catch(({error, setItems}) => {
 				try {
 					assert.equal(error, expectedError);
-					assert.deepStrictEqual(
-						new Map(Object.entries(setItems)),
-						new Map([[setKey, setValue]])
-					);
+					assert.deepStrictEqual(setItems, expectedSetItems);
 				} catch (o_o) {
-					return done(o_o);
+					done(o_o);
 				}
 				done();
-			}
-		});
-		stores[setKey].set(setValue);
+			});
+		} );
+		stores[key].set(expectedSetItems[key]);
 	});
-	specify("returns an unsubscriber")
+	specify("returns an unsubscriber", function (done) {
+		var key = "example";
+		var { stores, onWrite } = webextStorageAdapter("sync", key);
+		var unsubscriber = onWrite( () => {
+			done("subscriber was called");
+		} );
+		stores[key].set("hi");
+		unsubscriber();
+		Promise.resolve().then( () => done() );
+	});
 });
 describe("unLive property", function() {
 	specify("stops listening", function() {
