@@ -2,23 +2,44 @@
 
 - Breaking change: The signature of `webextStorageAdapter` is now `(storageArea, keys, {live})`. `onSetError` has been superceded by `onWrite` below.
 - Breaking change: Required ECMAScript support increased from 6th Edition to 2020 Edition (Chrome 80+ or Firefox 74+)
-- Breaking change: The default `live: true` option now requires support for [`StorageArea.onChanged`](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/storage/StorageArea/onChanged) (Firefox 101+)
+- Breaking change: The default `live: true` option now requires support for [`StorageArea.onChanged`](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/storage/StorageArea/onChanged) (Chrome 73+ or Firefox 101+)
 - Added: `storageArea` can now be a string, which is used to look up the object in `chrome.storage`.
+- Added: Use the [`onWrite`](./README.md#property-onwrite) method for store groups to get notified when StorageArea.set calls start, finish, or fail.
+- Changed: Setting a store to the primitive value it already had no longer re-saves that value to storage
+
+If this update was useful for you, consider [sending a tip!](./README.md#--with-money)
+
+Example migrations:
+
 ```javascript
-/* v2.0 */ let storeGroup = webextStorageAdapter(keys, {storageArea: chrome.storage.local});
-/* v3.0 */ let storeGroup = webextStorageAdapter("local", keys);
+/* v2.0 */
+let storeGroup = webextStorageAdapter(keys, {
+	storageArea: chrome.storage.local,
+	live: false,
+});
+/* v3.0 */
+let storeGroup = webextStorageAdapter("local", keys, {live: false});
 
 /* v2.0 */ let storeGroup = webextStorageAdapter(keys);
 /* v3.0 */ let storeGroup = webextStorageAdapter("sync", keys);
-```
-- Added: Use the `onWrite` method for store groups to get notified when StorageArea.set calls start, finish, or fail. An `onSetError` callback could be used like this:
-```javascript
-let storeGroup = webextStorageAdapter(area, keys);
+
+/* v2.0 */
+let storeGroup = webextStorageAdapter(keys, {onSetError: myErrorHandler});
+/* v3.0 */
+let storeGroup = webextStorageAdapter("sync", keys);
 storeGroup.onWrite( (write) => {
-	write.catch( ({error, setItems}) => onSetError(error, setItems) );
+	write.catch( ({error, setItems}) => myErrorHandler(error, setItems) );
 } );
+/* Alternate v3.0 */
+// The error will still be logged unless you call event.preventDefault()
+let storeGroup = webextStorageAdapter("sync", keys);
+window.addEventHandler("unhandledrejection", (event) => {
+	if ("setItems" in event.reason) {
+		let {error, setItems} = event.reason;
+		myErrorHandler(error, setItems);
+	}
+});
 ```
-- Changed: Setting a store to the primitive value it already had no longer re-saves that value to storage
 
 ## 2.0.2 (November 24, 2022)
 

@@ -10,9 +10,9 @@ If you're using [Svelte](https://svelte.dev/) v3 to make a [WebExtension](https:
 * **Automatic batching:** Save on storage writes when all your store changes are batched up to be sent out at the next Svelte tick.
 * **Live updates:** If you'd like, this package will handle listening for storage changes for you, even in 3rd-party area (with their support).
 
-This project has a [Code of Conduct](CODE_OF_CONDUCT.md). By participating in the Git repo or issues tracker, you agree to be as courteous, welcoming, and generally a lovely person as its terms require. 😊
+Version 3 is in beta. [Leave your feedback and help it be great!](https://github.com/PixievoltNo1/svelte-webext-storage-adapter/issues/14)
 
-👀 [**Version 3 is in planning!**](https://github.com/PixievoltNo1/svelte-webext-storage-adapter/issues/14) Leave your feedback and help it be the best version yet!
+This project has a [Code of Conduct](CODE_OF_CONDUCT.md). By participating in the Git repo or issues tracker, you agree to be as courteous, welcoming, and generally a lovely person as its terms require. 😊
 
 <!-- Table of contents generated mostly by the markdown-toc package - however, it includes emoji in the URLs, and they need to be stripped for GitHub -->
 <!-- toc -->
@@ -26,6 +26,7 @@ This project has a [Code of Conduct](CODE_OF_CONDUCT.md). By participating in th
     + [Property: `stores`](#property-stores)
     + [Property: `ready`](#property-ready)
     + [Property: `onWrite()`](#property-onwrite)
+    + [Handling write errors with `unhandledrejection`](#handling-write-errors-with-unhandledrejection)
     + [Property: `unLive()`](#property-unlive)
     + [Methods don't use `this`](#methods-dont-use-this)
   * [Implementation requirements for `StorageArea`](#implementation-requirements-for-storagearea)
