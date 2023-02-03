@@ -31,7 +31,7 @@
 		"nullKeysStores.mjs"
 	],
 	"scripts": {
-		"test": "mocha",
+		"test": "mocha -n expose-gc",
 		"prepublishOnly": "npm test"
 	},
 	"peerDependencies": {

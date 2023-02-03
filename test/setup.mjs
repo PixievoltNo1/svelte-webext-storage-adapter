@@ -16,23 +16,24 @@ before(function() {
 				}
 				Promise.resolve().then( () => { callback(requested); } );
 			},
-			set(newValues, callback = () => {}) {
+			set(newValues, callback) {
 				var changeset = {};
 				for (let [key, value] of Object.entries(newValues)) {
 					data[key] = value;
 					changeset[key] = {newValue: value};
 				}
 				Promise.resolve().then( () => {
-					callback();
+					callback?.();
 					for (let listener of listeners) {
 						listener(changeset);
 					}
 				} );
 			},
-			remove(key) {
+			remove(key, callback) {
 				delete data[key];
 				var changeset = { [key]: {} };
 				Promise.resolve().then( () => {
+					callback?.();
 					for (let listener of listeners) {
 						listener(changeset);
 					}

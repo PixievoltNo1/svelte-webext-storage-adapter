@@ -59,4 +59,59 @@ describe("stores property (null keys)", function() {
 			storageArea.remove("nananana");
 		} );
 	});
+	describe("garbage collection", function() {
+		before(function() {
+			if ( !(globalThis.gc && globalThis.setImmediate) ) {
+				this.skip();
+			}
+		});
+		/* It appears that before globalThis.gc can reliably collect a WeakRef, the function
+		creating it must return (awaiting doesn't count) and the microtask queue must be cleared. */
+		specify("subscribed stores cannot be GC'd", function(done) {
+			let { stores } = webextStorageAdapter("sync", null);
+			stores.test.subscribe( () => {} );
+			let expectedPresent = new WeakRef(stores.test);
+			setImmediate(() => {
+				globalThis.gc();
+				assert.ok(expectedPresent.deref());
+				done();
+			});
+		});
+		specify("stores with no more subscriptions can be GC'd", function (done) {
+			let { stores } = webextStorageAdapter("sync", null);
+			let unsubscribe = stores.test.subscribe( () => {} );
+			let expectedAbsent = new WeakRef(stores.test);
+			unsubscribe();
+			setImmediate(() => {
+				globalThis.gc();
+				assert.equal(expectedAbsent.deref(), undefined);
+				done();
+			});
+		});
+		specify("stores with a value cannot be GC'd", function (done) {
+			let { stores } = webextStorageAdapter("sync", null);
+			stores.test.set("hi");
+			let expectedPresent = new WeakRef(stores.test);
+			setImmediate(() => {
+				globalThis.gc();
+				assert.ok(expectedPresent.deref());
+				done();
+			});
+		});
+		specify("stores with data deleted from extension storage can be GC'd", function (done) {
+			let { stores, onWrite } = webextStorageAdapter("sync", null);
+			stores.test.set("hi");
+			let expectedAbsent = new WeakRef(stores.test);
+			onWrite( async (write) => {
+				await write;
+				chrome.storage.sync.remove("test", () => {
+					setImmediate(() => {
+						globalThis.gc();
+						assert.equal(expectedAbsent.deref(), undefined);
+						done();
+					});
+				});
+			} );
+		});
+	});
 });
