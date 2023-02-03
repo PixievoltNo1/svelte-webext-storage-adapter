@@ -75,6 +75,10 @@ export default function webextStorageAdapter(storageArea, keys, options = {}) {
 	if (typeof storageArea == "string") {
 		storageArea = chrome.storage[storageArea];
 	}
+	if (!storageArea.set) {
+		const msg = "first parameter must be a StorageArea, or the name of one in chrome.storage";
+		throw new TypeError(msg);
+	}
 	var ready = new Promise( (resolve, reject) => {
 		storageArea.get(keys, (results, error = chrome.runtime.lastError) => {
 			if (error) {
