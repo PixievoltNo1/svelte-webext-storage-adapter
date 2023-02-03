@@ -1,7 +1,6 @@
 import webextStorageAdapter from "../index.mjs";
 import { get } from "svelte/store";
 import { strict as assert } from "assert";
-import { createHook } from "async_hooks";
 
 describe("keys parameter", function() {
 	specify("string", function() {
