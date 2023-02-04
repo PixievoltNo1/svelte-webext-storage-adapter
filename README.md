@@ -42,7 +42,7 @@ This project has a [Code of Conduct](CODE_OF_CONDUCT.md). By participating in th
 ## Default export: `webextStorageAdapter()`
 
 <i>Parameters: [`storageArea`](#parameter-storagearea) (string or `StorageArea`), [`keys`](#parameter-keys) (string, array, object, or `null`), optional [`options`](#parameter-options) (object)</i><br>
-<i>Returns a [store group](#returned-value-store-group)</i>
+<i>Returns a [store group](#store-groups)</i>
 
 Creates a group of Svelte v3 [writable stores](https://svelte.dev/tutorial/writable-stores), populated from & persisted to `chrome.storage`. It will immediately request the needed values; this is asynchronous, but the store group will be returned synchronously with all stores in place. You can use [the store group's `ready` promise](#property-ready) to determine when values from storage are available.
 

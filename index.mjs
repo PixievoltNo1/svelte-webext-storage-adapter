@@ -4,12 +4,15 @@ import nullKeysStores from "./nullKeysStores.mjs";
 
 /**
  * Returned by webextStorageAdapter. Provides stores, plus properties that concern all of them.
- * [Read more...](https://github.com/PixievoltNo1/svelte-webext-storage-adapter#returned-value-store-group)
+ * [Read more...](https://github.com/PixievoltNo1/svelte-webext-storage-adapter#store-groups)
  * @typedef {Object} StoreGroup
  * @property {!Object<string,!Object>} stores Writable stores for each key in extension storage.
  * [Read more...](https://github.com/PixievoltNo1/svelte-webext-storage-adapter#property-stores)
  * @property {!Promise} ready Resolves when the initial read from extension storage is complete.
  * [Read more...](https://github.com/PixievoltNo1/svelte-webext-storage-adapter#property-ready)
+ * @property {function(function(Promise, Object)): Function} onWrite Subscribe to be notified when
+ * extension storage is being written to.
+ * [Read more...](https://github.com/PixievoltNo1/svelte-webext-storage-adapter#property-onwrite) 
  * @property {function()} unLive Stops listening for changes in extension storage so that the store
  * group can be garbage-collected.
  * [Read more...](https://github.com/PixievoltNo1/svelte-webext-storage-adapter#property-unlive)
@@ -19,7 +22,7 @@ import nullKeysStores from "./nullKeysStores.mjs";
  * Create Svelte stores based on data from `chrome.storage`.
  * [Read more...](https://github.com/PixievoltNo1/svelte-webext-storage-adapter#default-export-webextstorageadapter)
  * @param {!Object} [storageArea] The StorageArea where store values will be read from & written to.
- * [Read more...](https://github.com/PixievoltNo1/svelte-webext-storage-adapter#storagearea)
+ * [Read more...](https://github.com/PixievoltNo1/svelte-webext-storage-adapter#parameter-storagearea)
  * @param {string|string[]|!Object<string,*>|null} keys Keys from extension storage to use, or
  * `null` to use the entire area.
  * [Read more...](https://github.com/PixievoltNo1/svelte-webext-storage-adapter#parameter-keys)
@@ -30,7 +33,7 @@ import nullKeysStores from "./nullKeysStores.mjs";
  * [Read more...](https://github.com/PixievoltNo1/svelte-webext-storage-adapter#live)
  * @returns {StoreGroup} A store group object. Object creation is synchronous, but data from
  * extension storage isn't available until the `ready` property's Promise resolves.
- * [Read more...](https://github.com/PixievoltNo1/svelte-webext-storage-adapter#returned-value-store-group)
+ * [Read more...](https://github.com/PixievoltNo1/svelte-webext-storage-adapter#store-groups)
  */
 export default function webextStorageAdapter(storageArea, keys, options = {}) {
 	var { live = true } = options;
