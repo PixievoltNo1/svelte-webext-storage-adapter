@@ -1,4 +1,4 @@
-## Unpublished
+## 3.0.0 Beta 1 (Published as `@next` February 4, 2023)
 
 - Breaking change: The signature of `webextStorageAdapter` is now `(storageArea, keys, {live})`. `onSetError` has been superceded by `onWrite` below.
 - Breaking change: Required ECMAScript support increased from 6th Edition to 2020 Edition (Chrome 80+ or Firefox 74+)
