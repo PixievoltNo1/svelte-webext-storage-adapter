@@ -1,3 +1,7 @@
+## Unpublished
+
+- Changed: Throw with a more useful error message if the first parameter is `undefined` or an incorrect string
+
 ## 3.0.0 Beta 1 (Published as `@next` February 4, 2023)
 
 - Breaking change: The signature of `webextStorageAdapter` is now `(storageArea, keys, {live})`. `onSetError` has been superceded by `onWrite` below.
