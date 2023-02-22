@@ -10,8 +10,6 @@ If you're using [Svelte](https://svelte.dev/) v3 to make a [WebExtension](https:
 * **Automatic batching:** Save on storage writes when all your store changes are batched up to be sent out at the next Svelte tick.
 * **Live updates:** If you'd like, this package will handle listening for storage changes for you, even in 3rd-party area (with their support).
 
-Version 3 is in beta. [Leave your feedback and help it be great!](https://github.com/PixievoltNo1/svelte-webext-storage-adapter/issues/14)
-
 This project has a [Code of Conduct](CODE_OF_CONDUCT.md). By participating in the Git repo or issues tracker, you agree to be as courteous, welcoming, and generally a lovely person as its terms require. 😊
 
 <!-- Table of contents generated mostly by the markdown-toc package - however, it includes emoji in the URLs, and they need to be stripped for GitHub -->

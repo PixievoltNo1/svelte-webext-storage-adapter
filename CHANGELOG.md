@@ -1,8 +1,4 @@
-## Unpublished
-
-- Changed: Throw with a more useful error message if the first parameter is `undefined` or an incorrect string
-
-## 3.0.0 Beta 1 (Published as `@next` February 4, 2023)
+## 3.0.0 (February 21, 2023)
 
 - Breaking change: The signature of `webextStorageAdapter` is now `(storageArea, keys, {live})`. `onSetError` has been superceded by `onWrite` below.
 - Breaking change: Required ECMAScript support increased from 6th Edition to 2020 Edition (Chrome 80+ or Firefox 74+)
@@ -12,6 +8,12 @@
 - Changed: Setting a store to the primitive value it already had no longer re-saves that value to storage
 
 If this update was useful for you, consider [sending a tip!](./README.md#--with-money)
+
+<details><summary>Changes from 3.0.0 Beta 1 (published as `@next` February 4, 2023)</summary>
+
+- Changed: Throw with a more useful error message if the first parameter is `undefined` or an incorrect string
+
+</details>
 
 Example migrations:
 
