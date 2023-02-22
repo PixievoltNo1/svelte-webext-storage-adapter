@@ -1,6 +1,7 @@
 # `svelte-webext-storage-adapter`
 [![npm](https://img.shields.io/npm/v/svelte-webext-storage-adapter.svg)](https://www.npmjs.com/package/svelte-webext-storage-adapter)
 [![Bundle size](https://img.shields.io/bundlephobia/minzip/svelte-webext-storage-adapter.svg)](https://bundlephobia.com/result?p=svelte-webext-storage-adapter)
+[![GitHub CI Status](https://img.shields.io/github/actions/workflow/status/PixievoltNo1/svelte-webext-storage-adapter/node.js.yml?branch=master&label=tests)](https://github.com/PixievoltNo1/svelte-webext-storage-adapter/actions/workflows/node.js.yml)
 [![License](https://img.shields.io/github/license/PixievoltNo1/svelte-webext-storage-adapter.svg)](https://github.com/PixievoltNo1/svelte-webext-storage-adapter/blob/master/LICENSE.txt)
 [![GitHub Repo stars](https://img.shields.io/github/stars/PixievoltNo1/svelte-webext-storage-adapter?style=social)](https://github.com/PixievoltNo1/svelte-webext-storage-adapter)
 
