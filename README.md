@@ -288,7 +288,7 @@ export { exportedStores as stores, ready, exportedStores as default };
 
 ## Browser compatibility
 
-This package officially supports Firefox and Chrome. Other browsers that support WebExtensions aren't tested, but bug reports and pull requests for them are welcome. Firefox version 101+ and Chrome version 80+ support all additional requirements listed below.
+This package officially supports Firefox and Chrome. Other browsers that support WebExtensions aren't tested, but bug reports and pull requests for them are welcome. Firefox version 101+ and Chrome version 84+ support all additional requirements listed below.
 
 Support for ECMAScript 2020 is required (see [caniuse data for optional chaining](https://caniuse.com/mdn-javascript_operators_optional_chaining)). Transpilers & polyfills are supported provided [`keys`](#parameter-keys) is not `null`.
 
