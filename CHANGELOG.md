@@ -1,3 +1,7 @@
+## Unreleased
+
+- When using a 3rd-party `StorageArea`, the callbacks this package sends to it no longer throw if `chrome` or `chrome.runtime` are missing. This makes the package usable outside a WebExtension.
+
 ## 3.0.0 (February 21, 2023)
 
 - Breaking change: The signature of `webextStorageAdapter` is now `(storageArea, keys, {live})`. `onSetError` has been superceded by `onWrite` below.

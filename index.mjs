@@ -83,7 +83,7 @@ export default function webextStorageAdapter(storageArea, keys, options = {}) {
 		throw new TypeError(msg);
 	}
 	var ready = new Promise( (resolve, reject) => {
-		storageArea.get(keys, (results, error = chrome.runtime.lastError) => {
+		storageArea.get(keys, (results, error = chrome?.runtime?.lastError) => {
 			if (error) {
 				reject(error);
 			} else {
@@ -99,7 +99,7 @@ export default function webextStorageAdapter(storageArea, keys, options = {}) {
 	function sendToStorage() {
 		let setItems = nextSetItems;
 		var write = new Promise((resolve, reject) => {
-			storageArea.set(setItems, (error = chrome.runtime.lastError) => {
+			storageArea.set(setItems, (error = chrome?.runtime?.lastError) => {
 				if (error) {
 					reject({ error, setItems });
 				} else {
