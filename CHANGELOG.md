@@ -1,6 +1,8 @@
-## Unreleased
+## 3.0.1 (June🏳‍🌈 14, 2023)
 
 - When using a 3rd-party `StorageArea`, the callbacks this package sends to it no longer throw if `chrome` or `chrome.runtime` are missing. This makes the package usable outside a WebExtension.
+- Updated `storageArea`'s JSDocs
+- Marked as compatible with Svelte 4.0.0-next.1 and up
 
 ## 3.0.0 (February 21, 2023)
 

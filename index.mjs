@@ -21,7 +21,7 @@ import nullKeysStores from "./nullKeysStores.mjs";
 /**
  * Create Svelte stores based on data from `chrome.storage`.
  * [Read more...](https://github.com/PixievoltNo1/svelte-webext-storage-adapter#default-export-webextstorageadapter)
- * @param {!Object} [storageArea] The StorageArea where store values will be read from & written to.
+ * @param {string|!Object} storageArea The StorageArea where store values will be read from & written to.
  * [Read more...](https://github.com/PixievoltNo1/svelte-webext-storage-adapter#parameter-storagearea)
  * @param {string|string[]|!Object<string,*>|null} keys Keys from extension storage to use, or
  * `null` to use the entire area.

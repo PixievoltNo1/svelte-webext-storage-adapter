@@ -5,7 +5,7 @@
 [![License](https://img.shields.io/github/license/PixievoltNo1/svelte-webext-storage-adapter.svg)](https://github.com/PixievoltNo1/svelte-webext-storage-adapter/blob/master/LICENSE.txt)
 [![GitHub Repo stars](https://img.shields.io/github/stars/PixievoltNo1/svelte-webext-storage-adapter?style=social)](https://github.com/PixievoltNo1/svelte-webext-storage-adapter)
 
-If you're using [Svelte](https://svelte.dev/) v3 to make a [WebExtension](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions) for Firefox or Chrome, you can use this to create [writable stores](https://svelte.dev/tutorial/writable-stores) that are backed by your extension's storage. Handy features are provided to you right out of the box:
+If you're using [Svelte](https://svelte.dev/) v3 or v4 to make a [WebExtension](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions) for Firefox or Chrome, you can use this to create [writable stores](https://svelte.dev/tutorial/writable-stores) that are backed by your extension's storage. Handy features are provided to you right out of the box:
 
 * **Flexible:** This package can work with a part of or the entirety of any area of `chrome.storage`, including areas from 3rd-party packages.
 * **Automatic batching:** Save on storage writes when all your store changes are batched up to be sent out at the next Svelte tick.
@@ -304,10 +304,12 @@ I muchly appreciate any way you'd like to show your thanks - knowing people are 
 
 At [my Ko-Fi page](https://ko-fi.com/pixievoltno1), you can make a one-time or monthly donation, or [commission work on an issue](https://ko-fi.com/pixievoltno1/commissions).
 
+You can also support *all* your dependencies at once using [StackAid](https://www.stackaid.us/)!
+
 ## 💌 ... with kind words
 
 Current contact info is on [this page](https://pixievoltno1.com/contact/) - or you can create an "issue" on this repo just to say thanks! Thank-you "issues" will be closed right away, but are treasured regardless~
 
 ## 🤝 ... with a job
 
-[I have a Developer Story on Stack Overflow!](https://stackoverflow.com/users/story/707043)
+Want me to sling some JavaScript for you? [Look over my other work](https://github.com/PixievoltNo1) and [contact me!](https://pixievoltno1.com/contact/)
