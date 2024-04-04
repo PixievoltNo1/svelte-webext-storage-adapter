@@ -1,6 +1,9 @@
 ## Unreleased
 
 - Fixed calling `onWrite` repeatedly with the same function only subscribing once
+- Now supports Svelte 5 (-next.94 and later)
+
+In Svelte 5, this package does not use runes and continues to use the original writable store interface, which is not deprecated. I may release a separate package that uses runes.
 
 ## 3.0.1 (June🏳‍🌈 14, 2023)
 
