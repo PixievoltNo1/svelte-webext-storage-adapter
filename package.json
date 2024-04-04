@@ -1,6 +1,6 @@
 {
 	"name": "svelte-webext-storage-adapter",
-	"version": "3.0.1",
+	"version": "3.0.2",
 	"description": "Svelte stores, backed up by chrome.storage",
 	"keywords": [
 		"svelte",

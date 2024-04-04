@@ -1,4 +1,4 @@
-## Unreleased
+## 3.0.2 (April 3, 2024)
 
 - Fixed calling `onWrite` repeatedly with the same function only subscribing once
 - Now supports Svelte 5 (-next.94 and later)
