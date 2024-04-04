@@ -95,7 +95,7 @@ export default function webextStorageAdapter(storageArea, keys, options = {}) {
 		});
 	} );
 
-	var onWriteSubscribers = new Set();
+	var onWriteSubscribers = new Map();
 	function sendToStorage() {
 		let setItems = nextSetItems;
 		var write = new Promise((resolve, reject) => {
@@ -107,7 +107,7 @@ export default function webextStorageAdapter(storageArea, keys, options = {}) {
 				}
 			});
 		});
-		for (let subscriber of onWriteSubscribers) {
+		for (let subscriber of onWriteSubscribers.values()) {
 			subscriber(write, setItems);
 		}
 		nextSetItems = null;
@@ -116,8 +116,9 @@ export default function webextStorageAdapter(storageArea, keys, options = {}) {
 		if (typeof subscriber != "function") {
 			throw new TypeError("onWrite must be called with a function");
 		}
-		onWriteSubscribers.add(subscriber);
-		return () => onWriteSubscribers.delete(subscriber);
+		let key = Symbol();
+		onWriteSubscribers.set(key, subscriber);
+		return () => onWriteSubscribers.delete(key);
 	}
 	
 	if (live) {

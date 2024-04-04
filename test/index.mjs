@@ -158,6 +158,18 @@ describe("onWrite property", function () {
 		} );
 		stores[key].set(expectedSetItems[key]);
 	});
+	specify("allows the same subscriber more than once", function(done) {
+		var noOfCalls = 0;
+		var expectedNoOfCalls = 2;
+		var subscriber = () => {
+			++noOfCalls;
+			if (noOfCalls == expectedNoOfCalls) { done(); }
+		};
+		var { stores, onWrite } = webextStorageAdapter("sync", null);
+		onWrite(subscriber);
+		onWrite(subscriber);
+		stores["key"].set("value");
+	})
 	specify("subscriber's received Promise resolves when the write is done", function (done) {
 		var key = "example";
 		var expectedData = { [key]: "yo" };
